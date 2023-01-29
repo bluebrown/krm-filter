@@ -1,0 +1,11 @@
+apiVersion: kpt.dev/v1
+kind: Kptfile
+metadata:
+  name: kpt
+  annotations:
+    config.kubernetes.io/local-config: "true"
+pipeline:
+  validators:
+    - exec: kubeconform
+      configMap:
+        strict: true

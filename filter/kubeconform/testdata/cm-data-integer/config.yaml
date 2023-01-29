@@ -1,0 +1,8 @@
+apiVersion: bluebrown.github.io/v1alpha1
+kind: KubeConform
+metadata:
+  name: schema-validation
+  annotations:
+    config.kubernetes.io/local-config: "true"
+data:
+  strict: true

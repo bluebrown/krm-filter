@@ -1,0 +1,95 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-cm
+data:
+  key: value
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-secret
+type: Opaque
+stringData:
+  password: <Password>
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp
+  labels:
+    name: myapp
+  annotations:
+    configmap.checksum/my-cm: d8310ca4272d18edf3cbaca959cfdee9732a9fb41efd5c409f646c1cd9beb777
+    secret.checksum/my-secret: 84180dbaed43c1a397783ff4ddcf10aef62b7b32ba9f85957ec50f63aa2af89d
+spec:
+  containers:
+  - name: myapp
+    env:
+    - name: FOO
+      valueFrom:
+        secretKeyRef:
+          name: my-secret
+          key: password
+    - name: BAR
+      valueFrom:
+        configMapKeyRef:
+          name: my-cm
+          key: key
+    envFrom:
+    - configMapRef:
+        name: my-cm
+    - secretRef:
+        name: my-secret
+  volumes:
+  - name: foo
+    secret:
+      secretName: my-secret
+  - name: bar
+    configMap:
+      name: my-cm
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+spec:
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+      annotations:
+        configmap.checksum/my-cm: d8310ca4272d18edf3cbaca959cfdee9732a9fb41efd5c409f646c1cd9beb777
+        secret.checksum/my-secret: 84180dbaed43c1a397783ff4ddcf10aef62b7b32ba9f85957ec50f63aa2af89d
+    spec:
+      containers:
+      - name: myapp
+        env:
+        - name: FOO
+          valueFrom:
+            secretKeyRef:
+              name: my-secret
+              key: password
+        - name: BAR
+          valueFrom:
+            configMapKeyRef:
+              name: my-cm
+              key: key
+        envFrom:
+        - configMapRef:
+            name: my-cm
+        - secretRef:
+            name: my-secret
+      volumes:
+      - name: foo
+        secret:
+          secretName: my-secret
+      - name: bar
+        configMap:
+          name: my-cm
+      - name: other
+        configMap:
+          name: qwertzuiopü

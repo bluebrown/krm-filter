@@ -1,0 +1,8 @@
+line_ending: lf
+doublestar: true
+include: ["**/*.yaml", "**/*.yml"]
+exclude: ["**/charts/**", "**/localized-*/**"]
+formatter:
+  type: basic
+  indentless_arrays: true
+  pad_line_comments: 1

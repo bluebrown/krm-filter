@@ -1,0 +1,9 @@
+apiVersion: bluebrown.github.io/v1alpha1
+kind: RefHash
+metadata:
+  name: hash
+  annotations:
+    config.kubernetes.io/local-config: "true"
+    config.kubernetes.io/function: |
+      exec:
+        path: refhash

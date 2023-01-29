@@ -1,0 +1,39 @@
+apiVersion: bluebrown.github.io/v1alpha1
+kind: Patchwork
+metadata:
+  name: cmp-sidecar
+  annotations:
+    config.kubernetes.io/local-config: "true"
+    config.kubernetes.io/function: |
+      container:
+        image: bluebrown/krm-filter/patchwork
+spec:
+  patches:
+  - resource:
+      kind: Deployment
+      name: argocd-repo-server
+    lookup:
+    - spec.template
+    values:
+    - paths:
+      - spec.volumes.[name=cmp-krm-tmp].emptyDir
+      - spec.volumes.[name=cmp-krm-confighome].emptyDir
+      value: {}
+    - paths:
+      - spec.containers.[name=cmp-krm]
+      value:
+        name: cmp-krm
+        image: bluebrown/argocd-cmp-krm:v0.1.0
+        command: [/var/run/argocd/argocd-cmp-server]
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 999
+        volumeMounts:
+        - mountPath: /var/run/argocd
+          name: var-files
+        - name: plugins
+          mountPath: /home/argocd/cmp-server/plugins
+        - name: cmp-krm-tmp
+          mountPath: /tmp
+        - name: cmp-krm-confighome
+          mountPath: /home/argocd/.config/krm-filter

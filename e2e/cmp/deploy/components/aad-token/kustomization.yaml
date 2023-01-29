@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1alpha1
+kind: Component
+secretGenerator:
+- name: aad-token
+  envs:
+  - ./etc/aad-token.env # should contain 'AAD_ACCESS_TOKEN'
+  options:
+    disableNameSuffixHash: true
+transformers:
+- ./patchwork.yaml

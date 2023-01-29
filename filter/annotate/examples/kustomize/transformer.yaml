@@ -1,0 +1,12 @@
+apiVersion: bluebrown.github.io/v1alpha1
+kind: Annotate
+metadata:
+  name: meta
+  annotations:
+    config.kubernetes.io/local-config: "true"
+    config.kubernetes.io/function: |
+      exec:
+        path: annotate
+data:
+  repo: https://github.com/bluebrown/app
+  revision: v1

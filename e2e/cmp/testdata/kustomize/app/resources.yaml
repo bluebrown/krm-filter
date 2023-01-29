@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-kustomize
+spec:
+  selector:
+    matchLabels:
+      app: test-kustomize
+  template:
+    metadata:
+      labels:
+        app: test-kustomize
+    spec:
+      containers:
+      - name: test-kustomize
+        image: bluebrown/echoserver
+        resources: {}
+        envFrom:
+        - configMapRef:
+            name: test-kustomize
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test-kustomize
+data:
+  key: value

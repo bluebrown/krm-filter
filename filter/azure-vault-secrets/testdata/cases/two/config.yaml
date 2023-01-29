@@ -1,0 +1,7 @@
+apiVersion: bluebrown.github.io/v1alpha1
+kind: AzureVaultSecrets
+metadata:
+  name: secrets
+data:
+  mode: file-mock
+  fs: memory

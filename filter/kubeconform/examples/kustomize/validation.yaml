@@ -1,0 +1,11 @@
+apiVersion: bluebrown.github.io/v1alpha1
+kind: KubeConformValidator
+metadata:
+  name: schema-validation
+  annotations:
+    config.kubernetes.io/local-config: "true"
+    config.kubernetes.io/function: |
+      exec:
+        path: kubeconform
+data:
+  strict: true

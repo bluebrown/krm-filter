@@ -1,0 +1,19 @@
+apiVersion: bluebrown.github.io/v1alpha1
+kind: SetValue
+metadata:
+  name: patch
+  annotations:
+    config.kubernetes.io/local-config: "true"
+spec:
+  patches:
+  - resource:
+      kind: Deployment
+    lookup:
+    - spec.template
+    values:
+    - paths:
+      - spec.containers.*.resources.requests
+      - spec.containers.*.resources.limits
+      value:
+        memory: 128Mi
+        cpu: 250m

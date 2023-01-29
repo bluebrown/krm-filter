@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+spec:
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+      - name: myapp
+        image: nginx
+        resources: {}
+        envFrom:
+        - configMapRef:
+            name: myapp
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: myapp
+data:
+  key: value

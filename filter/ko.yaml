@@ -1,0 +1,14 @@
+# NOTE: this file does not work in its own
+# it is intended to be used with envsubst
+#
+#   export KO_CONFIG_PATH=/tmp/ko.yaml
+#   TARGET=./cmd/foo/ envsubst < ko.yaml > "$KO_CONFIG_PATH"
+#
+builds:
+- id: any
+  dir: .
+  main: "${TARGET}"
+  ldflags:
+  - -s -w
+  - -X "main.version={{ .Env.VERSION }}"
+  - -X "main.revision={{ .Env.REVISION }}"

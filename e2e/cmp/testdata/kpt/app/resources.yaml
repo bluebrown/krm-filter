@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-kpt
+spec:
+  selector:
+    matchLabels:
+      app: test-kpt
+  template:
+    metadata:
+      labels:
+        app: test-kpt
+    spec:
+      containers:
+      - name: test-kpt
+        image: bluebrown/echoserver
+        resources: {}
+        envFrom:
+        - configMapRef:
+            name: test-kpt
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test-kpt
+data:
+  key: value

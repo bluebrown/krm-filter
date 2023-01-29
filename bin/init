@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -o nounset -o errexit -o errtrace -o pipefail
+
+filter="$1"
+mkdir -p "filter/$filter"
+cd "filter/$filter"
+go mod init "github.com/bluebrown/krm-filter/filter/$filter"
+ln -s ../Makefile Makefile
+echo "version=v0.1.0" >build-meta.txt
+cd -
+go work use "filter/$filter"

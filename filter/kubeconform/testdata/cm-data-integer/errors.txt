@@ -1,0 +1,1 @@
+(0): v1/ConfigMap/myapp: [invalid] /data/key: expected string or null, but got number

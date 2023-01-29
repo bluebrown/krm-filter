@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+spec:
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+      annotations:
+        configmap.checksum/myapp: 0fe28fe18643febd32e0e632ee0ae8c5c766742bd649bf92a435fe32eac8b585
+    spec:
+      containers:
+      - name: myapp
+        image: nginx
+        resources: {}
+        env:
+        - name: foo
+          valueFrom:
+            configMapKeyRef:
+              key: key
+              name: myapp
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: myapp
+data:
+  key: value

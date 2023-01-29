@@ -1,0 +1,22 @@
+apiVersion: bluebrown.github.io/v1alpha1
+kind: Patchwork
+metadata:
+  name: aad-token
+  annotations:
+    config.kubernetes.io/local-config: "true"
+    config.kubernetes.io/function: |
+      container:
+        image: bluebrown/krm-filter/patchwork
+spec:
+  patches:
+  - resource:
+      kind: Deployment
+      name: argocd-repo-server
+    lookup:
+    - spec.template
+    values:
+    - paths:
+      - spec.containers.*.env.[name=AAD_ACCESS_TOKEN].valueFrom.secretKeyRef
+      value:
+        name: aad-token
+        key: AAD_ACCESS_TOKEN

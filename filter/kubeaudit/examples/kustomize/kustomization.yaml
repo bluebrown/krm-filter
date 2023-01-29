@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+- ./resources.yaml
+transformers:
+# the validator is used here
+# even though its not a transformer
+# this is because kustomize has issues
+# using the validators
+- ./_filter.yaml

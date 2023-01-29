@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+spec:
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      volumes:
+      - name: cm
+        configMap:
+          name: myapp
+      - name: secret
+        secret:
+          secretName: mysecret
+      - name: sealed
+        secret:
+          secretName: top-secret
+      containers:
+      - name: myapp
+        image: nginx
+        resources: {}
+        envFrom:
+        - secretRef:
+            name: top-secret
+        env:
+        - name: secret
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: mysecret
+        - name: cm
+          valueFrom:
+            configMapKeyRef:
+              key: key
+              name: myapp
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysecret
+type: Opaque
+data:
+  password: <Password>
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: myapp
+data:
+  key: value
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: top-secret
+spec:
+  encryptedData:
+    foo: AgBy3i4OJSWK+PiTySYZZA9rO43cGDEq

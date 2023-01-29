@@ -1,0 +1,36 @@
+# filters are run in the order they are declared in a given file. By putting all
+# in one file the order can be enforced, even when using 'kustomize fn run'.
+apiVersion: bluebrown.github.io/v1alpha1
+kind: KubeAuditTransformer
+metadata:
+  name: fix
+  annotations:
+    config.kubernetes.io/local-config: "true"
+    config.kubernetes.io/function: |
+      exec:
+        path: kubeaudit-fix
+# the spec is identical to the kubeaudit config file
+# https://github.com/Shopify/kubeaudit#configuration-file
+spec:
+  # by default all auditors are enabled
+  enabledAuditors: {}
+  # specific auditor
+  auditors:
+    limits:
+      cpu: "750m"
+      memory: "500Mi"
+---
+apiVersion: bluebrown.github.io/v1alpha1
+kind: KubeAuditValidator
+metadata:
+  name: audit
+  annotations:
+    config.kubernetes.io/local-config: "true"
+    config.kubernetes.io/function: |
+      exec:
+        path: kubeaudit
+spec:
+  auditors:
+    limits:
+      cpu: "750m"
+      memory: "500Mi"

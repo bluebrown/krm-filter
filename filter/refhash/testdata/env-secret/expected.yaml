@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+spec:
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+      annotations:
+        secret.checksum/mysecret: 5d1e691ae76654228fbef2e8a70ae5510142dbdeb7a6b83987f3371901e80c02
+    spec:
+      containers:
+      - name: myapp
+        image: nginx
+        resources: {}
+        env:
+        - name: foo
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: mysecret
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysecret
+type: Opaque
+data:
+  password: <Password>

@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+spec:
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+      annotations:
+        configmap.checksum/myapp: fd1bc39e67489900c5f673d5aef45653c7acc88e9609d4160ce22143716890c8
+        sealedsecret.checksum/top-secret: a3ac22e35cb368eafaebfaa7e1038fde228d8d233df85559ed9b8f246f99a3d0
+        secret.checksum/mysecret: 5d1e691ae76654228fbef2e8a70ae5510142dbdeb7a6b83987f3371901e80c02
+    spec:
+      volumes:
+      - name: cm
+        configMap:
+          name: myapp
+      - name: secret
+        secret:
+          secretName: mysecret
+      - name: sealed
+        secret:
+          secretName: top-secret
+      containers:
+      - name: myapp
+        image: nginx
+        resources: {}
+        envFrom:
+        - secretRef:
+            name: top-secret
+        env:
+        - name: secret
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: mysecret
+        - name: cm
+          valueFrom:
+            configMapKeyRef:
+              key: key
+              name: myapp
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mysecret
+type: Opaque
+data:
+  password: <Password>
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: myapp
+data:
+  key: value
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: top-secret
+spec:
+  encryptedData:
+    foo: AgBy3i4OJSWK+PiTySYZZA9rO43cGDEq

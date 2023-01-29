@@ -1,0 +1,11 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ConfigManagementPlugin
+metadata:
+  name: krm-filter
+spec:
+  version: v1.0
+  discover:
+    fileName: Kptfile
+  generate:
+    command:
+    - /opt/krm-filter/bin/plugin

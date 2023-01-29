@@ -1,0 +1,12 @@
+go 1.20
+
+use (
+	./
+	./filter/annotate
+	./filter/azure-vault-secrets
+	./filter/kubeaudit
+	./filter/kubeconform
+	./filter/patchwork
+	./filter/refhash
+	./util
+)

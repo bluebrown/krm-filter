@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+spec:
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+      annotations:
+        sealedsecret.checksum/top-secret: ddcced521d930706d5f41b6d0a22661b13e03bb38ccc49d7e50b88f37a8a1888
+    spec:
+      containers:
+      - name: myapp
+        image: nginx
+        resources: {}
+        env:
+        - name: foo
+          valueFrom:
+            secretKeyRef:
+              key: foo
+              name: top-secret
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: top-secret
+spec:
+  encryptedData:
+    foo: AgBy3i4OJSWK+PiTySYZZA9rO43cGDEq

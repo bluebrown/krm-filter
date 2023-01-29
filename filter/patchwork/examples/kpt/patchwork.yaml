@@ -1,0 +1,54 @@
+apiVersion: bluebrown.github.io/v1alpha1
+kind: PAtchwork
+metadata:
+  name: patch
+  annotations:
+    config.kubernetes.io/local-config: "true"
+    config.kubernetes.io/function: "{exec: {path: patchwork}}"
+spec:
+  patches:
+  - resource:
+      kind: (Deployment|Job|CronJob)
+    lookup:
+    - spec.template
+    - spec.jobTemplate.spec.template
+    values:
+    # inject a sidecar
+    - paths:
+      # TODO: use jq or jsonpath or jsmepath
+      - spec.containers.[name=sidecar]
+      value:
+        name: sidecar
+        image: busybox
+        command:
+        - sleep
+        args:
+        - infinity
+    # ensure resource limits
+    - paths:
+      - spec.containers.*.resources.requests
+      - spec.containers.*.resources.limits
+      value:
+        memory: 128Mi
+        cpu: 250m
+    # add tolerations
+    - paths:
+      - spec.tolerations
+      value:
+      - key: kubernetes.myorg.io/role
+        value: service
+    # labels the resources
+    - paths:
+      - metadata.labels.app\.kubernetes\.io/name
+      value: "cool-app"
+  # jobs and cronjobs use a special entrypoint script
+  - resource:
+      kind: (Job|CronJob)
+    lookup:
+    - spec.template
+    - spec.jobTemplate.spec.template
+    values:
+    - paths:
+      - spec.containers.[name=app].command
+      value:
+      - /job-wrapper.sh

@@ -1,0 +1,42 @@
+apiVersion: bluebrown.github.io/v1alpha1
+kind: Patchwork
+metadata:
+  name: aad-token
+  annotations:
+    config.kubernetes.io/local-config: "true"
+    config.kubernetes.io/function: |
+      container:
+        image: bluebrown/krm-filter/patchwork
+spec:
+  patches:
+  - resource:
+      kind: Deployment
+      name: argocd-repo-server
+    lookup:
+    - spec.template
+    values:
+    - paths:
+      - spec.volumes.[name=krm-bin].emptyDir
+      value: {}
+    - paths:
+      - spec.initContainers.[name=krm-filter]
+      value:
+        name: krm-filter
+        image: bluebrown/argocd-cmp-krm:v0.1.0
+        command: [bash, -c]
+        args: [cp /opt/krm-filter/bin/* /opt/krm-bin/]
+    - paths:
+      - spec.initContainers.[name=krm-filter].volumeMounts.[name=krm-bin].mountPath
+      - spec.containers.[name=argocd-repo-server].volumeMounts.[name=krm-bin].mountPath
+      value: /opt/krm-bin
+    - paths:
+      - spec.containers.[name=argocd-repo-server].env.[name=PATH].value
+      value: /opt/krm-bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+  - resource:
+      kind: ConfigMap
+      name: argocd-cm
+    values:
+    - paths:
+      - data.kustomize\.buildOptions
+      value: >-
+        --enable-helm --load-restrictor=LoadRestrictionsNone --enable-alpha-plugins --enable-exec

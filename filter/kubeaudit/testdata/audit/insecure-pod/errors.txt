@@ -1,0 +1,57 @@
+The following issues require manual intervention. Please fix these and run the function again:
+
+---------------- Results for ---------------
+
+  apiVersion: v1
+  kind: Pod
+  metadata:
+    name: myapp
+
+--------------------------------------------
+
+-- [error] AppArmorAnnotationMissing
+   Message: AppArmor annotation missing. The annotation 'container.apparmor.security.beta.kubernetes.io/myapp' should be added.
+   Metadata:
+      Container: myapp
+      MissingAnnotation: container.apparmor.security.beta.kubernetes.io/myapp
+
+-- [error] AutomountServiceAccountTokenTrueAndDefaultSA
+   Message: Default service account with token mounted. automountServiceAccountToken should be set to 'false' on either the ServiceAccount or on the PodSpec or a non-default service account should be used.
+
+-- [error] CapabilityOrSecurityContextMissing
+   Message: Security Context not set. The Security Context should be specified and all Capabilities should be dropped by setting the Drop list to ALL.
+   Metadata:
+      Container: myapp
+
+-- [warning] ImageTagMissing
+   Message: Image tag is missing.
+   Metadata:
+      Container: myapp
+
+-- [warning] LimitsNotSet
+   Message: Resource limits not set.
+   Metadata:
+      Container: myapp
+
+-- [error] RunAsNonRootPSCNilCSCNil
+   Message: runAsNonRoot should be set to true or runAsUser should be set to a value > 0 either in the container SecurityContext or PodSecurityContext.
+   Metadata:
+      Container: myapp
+
+-- [error] AllowPrivilegeEscalationNil
+   Message: allowPrivilegeEscalation not set which allows privilege escalation. It should be set to 'false'.
+   Metadata:
+      Container: myapp
+
+-- [warning] PrivilegedNil
+   Message: privileged is not set in container SecurityContext. Privileged defaults to 'false' but it should be explicitly set to 'false'.
+   Metadata:
+      Container: myapp
+
+-- [error] ReadOnlyRootFilesystemNil
+   Message: readOnlyRootFilesystem is not set in container SecurityContext. It should be set to 'true'.
+   Metadata:
+      Container: myapp
+
+-- [error] SeccompProfileMissing
+   Message: Pod Seccomp profile is missing. Seccomp profile should be added to the pod SecurityContext.

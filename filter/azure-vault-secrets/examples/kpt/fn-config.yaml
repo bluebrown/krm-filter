@@ -1,0 +1,12 @@
+apiVersion: bluebrown.github.io/v1alpha1
+kind: AzureVaultSecrets
+metadata:
+  name: secrets
+  annotations:
+    config.kubernetes.io/local-config: "true"
+    config.kubernetes.io/function: |
+      exec:
+        path: azure-vault-secrets
+data:
+  mode: azure
+  fs: disk

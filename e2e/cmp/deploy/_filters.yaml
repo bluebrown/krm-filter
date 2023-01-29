@@ -1,0 +1,55 @@
+apiVersion: bluebrown.github.io/v1alpha1
+kind: Patchwork
+metadata:
+  name: limits
+  annotations:
+    config.kubernetes.io/local-config: "true"
+    config.kubernetes.io/function: |
+      container:
+        image: bluebrown/krm-filter/patchwork
+spec:
+  patches:
+  - resource:
+      kind: (Deployment|StatefulSet)
+    lookup:
+    - spec.template
+    values:
+    - paths:
+      - spec.containers.*.resources.limits
+      value:
+        cpu: 1000m
+        memory: 2Gi
+  - resource:
+      kind: Deployment
+      name: argocd-repo-server
+    lookup:
+    - spec.template
+    values:
+    - paths:
+      - spec.initContainers.*.resources.limits
+      value:
+        cpu: 1000m
+        memory: 2Gi
+---
+apiVersion: bluebrown.github.io/v1alpha1
+kind: RefHash
+metadata:
+  name: hash
+  annotations:
+    config.kubernetes.io/local-config: "true"
+    config.kubernetes.io/function: |
+      container:
+        image: bluebrown/krm-filter/refhash
+---
+apiVersion: bluebrown.github.io/v1alpha1
+kind: KubeAuditTransformer
+metadata:
+  name: fix
+  annotations:
+    config.kubernetes.io/local-config: "true"
+    config.kubernetes.io/function: |
+      container:
+        image: bluebrown/krm-filter/kubeaudit-fix
+spec:
+  enabledAuditors:
+    apparmor: false # kind has no appamor

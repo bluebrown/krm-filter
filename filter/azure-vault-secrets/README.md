@@ -1,0 +1,92 @@
+# KRM Filter - Annotate
+
+<!--mdtogo:Short-->
+
+Generate kubernetes secrets from azure vault
+
+<!--mdtogo-->
+
+<!--mdtogo:Long-->
+
+This function fetches secrets, defined by a client side custom resource, from
+azure vault and generates kubernetes secrets from it.
+
+## Auth
+
+The function requires either service principal credentials or a id token.
+
+### Service Principal
+
+```bash
+export AZURE_TENANT_ID=
+export AAD_SERVICE_PRINCIPAL_CLIENT_ID=
+export AAD_SERVICE_PRINCIPAL_CLIENT_SECRET=
+```
+
+### Access Token
+
+```bash
+export AAD_ACCESS_TOKEN="$(az account get-access-token \
+  --resource https://vault.azure.net --scope https://vault.azure.net/.default \
+  --query accessToken --output tsv)"
+```
+
+<!--mdtogo-->
+
+## Examples
+
+<!--mdtogo:Examples-->
+
+The function config is a simple configmap-like object to control the behavior
+of the generator.
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vault-secrets
+data:
+  mode: azure # can also be 'file-mock', reading secrets from $FILE_MOCK_DATA_DIR
+  fs: disk # fs can also be memory, not caching secrets to disk
+```
+
+The actual secrets are generated from resources of kind `AzureVaultSource`.
+
+```yaml
+apiVersion: bluebrown.github.io/v1alpha1
+kind: AzureVaultSource
+metadata:
+  name: env-file
+  annotations:
+    config.kubernetes.io/local-config: "true"
+spec:
+  # the name of the secret in kubernetes, to create
+  secretName: env-file
+
+  # list of container targets to inject the secret
+  # as envFrom secret ref
+  containerTargets:
+    - myapp
+
+  # the vault uri as written in the azure portal
+  vaultUri: https://krmtest.vault.azure.net/
+
+  # list of secrets to retrieve from the vault
+  vaultSecrets:
+    - secret: my-env-file #the secret name in the vault
+      version: "" # uses 'latest', if empty
+      key: env # the key is the secret name, if empty
+
+  # optional go template to format the secrets
+  # if not provided, secrets are rendered as key value pairs
+  stringDataTemplate: |
+    {{ envToYaml .env }}
+```
+
+Run the function as standalone providing the function config and resources.
+
+```bash
+azure-vault-secrets fn-config.yaml - < resources.yaml
+```
+
+<!--mdtogo-->

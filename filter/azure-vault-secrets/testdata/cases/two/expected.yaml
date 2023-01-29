@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp
+spec:
+  containers:
+  - name: myapp
+    envFrom:
+    - secretRef: {name: "env-file"}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: other
+spec:
+  containers:
+  - name: other
+---
+apiVersion: bluebrown.github.io/v1alpha1
+kind: AzureVaultSource
+metadata:
+  name: env-file
+  annotations:
+    config.kubernetes.io/local-config: "true"
+spec:
+  secretName: env-file
+  containerTargets:
+  - myapp
+  vaultUri: https://krmtest.vault.azure.net/
+  vaultSecrets:
+  - secret: mysecret
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: env-file
+  annotations:
+    keyvault/uri: https://krmtest.vault.azure.net/
+    version/mysecret: latest
+type: Opaque
+data: {mysecret: c3VwZXJzZWNyZXQ=}

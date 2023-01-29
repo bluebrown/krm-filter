@@ -1,0 +1,96 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: my-cm
+data:
+  key: value
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: my-secret
+type: Opaque
+stringData:
+  password: <Password>
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: top-secret
+spec:
+  encryptedData:
+    foo: AgBy3i4OJSWK+PiTySYZZA9rO43cGDEq
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: myapp
+  labels:
+    name: myapp
+spec:
+  containers:
+  - name: myapp
+    env:
+    - name: FOO
+      valueFrom:
+        secretKeyRef:
+          name: my-secret
+          key: password
+    - name: BAR
+      valueFrom:
+        configMapKeyRef:
+          name: my-cm
+          key: key
+    envFrom:
+    - configMapRef:
+        name: my-cm
+    - secretRef:
+        name: my-secret
+    - secretRef:
+        name: top-secret
+  volumes:
+  - name: foo
+    secret:
+      secretName: my-secret
+  - name: bar
+    configMap:
+      name: my-cm
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+spec:
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    spec:
+      containers:
+      - name: myapp
+        env:
+        - name: FOO
+          valueFrom:
+            secretKeyRef:
+              name: my-secret
+              key: password
+        - name: BAR
+          valueFrom:
+            configMapKeyRef:
+              name: my-cm
+              key: key
+        envFrom:
+        - configMapRef:
+            name: my-cm
+        - secretRef:
+            name: my-secret
+      volumes:
+      - name: foo
+        secret:
+          secretName: my-secret
+      - name: bar
+        configMap:
+          name: my-cm
+      - name: other
+        configMap:
+          name: qwertzuiopü

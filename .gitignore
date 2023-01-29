@@ -1,0 +1,7 @@
+.coverage/
+.out/
+/bin/*
+!bin/init
+!bin/makehelp
+/.env
+nohup.out

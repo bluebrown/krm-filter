@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    container.apparmor.security.beta.kubernetes.io/myapp: runtime/default
+  labels:
+    name: myapp
+  name: myapp
+spec:
+  automountServiceAccountToken: false
+  containers:
+  - image: busybox
+    name: myapp
+    resources: {}
+    securityContext:
+      allowPrivilegeEscalation: false
+      capabilities:
+        drop:
+        - ALL
+      privileged: false
+      readOnlyRootFilesystem: true
+      runAsNonRoot: true
+  securityContext:
+    seccompProfile:
+      type: RuntimeDefault
