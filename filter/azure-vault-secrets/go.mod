@@ -4,7 +4,7 @@ go 1.20
 
 require (
 	github.com/Masterminds/sprig v2.22.0+incompatible
-	github.com/bluebrown/krm-filter/util v0.0.0-20230221102340-ab3572e9310d
+	github.com/bluebrown/krm-filter/util v0.0.0-20230628154008-ad497eca2e2d
 	github.com/bluebrown/treasure-map v0.0.0-20220418173404-da5d8eccbd25
 	github.com/spf13/cobra v1.7.0
 	golang.org/x/exp v0.0.0-20230510235704-dd950f8aeaea

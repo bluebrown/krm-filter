@@ -3,7 +3,7 @@ module github.com/bluebrown/krm-filter/filter/refhash
 go 1.20
 
 require (
-	github.com/bluebrown/krm-filter/util v0.0.0-20230221102340-ab3572e9310d
+	github.com/bluebrown/krm-filter/util v0.0.0-20230628154008-ad497eca2e2d
 	github.com/spf13/cobra v1.7.0
 	golang.org/x/exp v0.0.0-20230510235704-dd950f8aeaea
 	sigs.k8s.io/kustomize/kyaml v0.14.2

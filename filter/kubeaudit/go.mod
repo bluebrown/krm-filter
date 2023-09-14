@@ -8,7 +8,7 @@ replace github.com/Shopify/kubeaudit => github.com/bluebrown/kubeaudit v0.0.0-20
 
 require (
 	github.com/Shopify/kubeaudit v0.0.0-00010101000000-000000000000
-	github.com/bluebrown/krm-filter/util v0.0.0-20230221102340-ab3572e9310d
+	github.com/bluebrown/krm-filter/util v0.0.0-20230628154008-ad497eca2e2d
 	github.com/spf13/cobra v1.7.0
 	sigs.k8s.io/kustomize/kyaml v0.14.2
 	sigs.k8s.io/yaml v1.3.0
