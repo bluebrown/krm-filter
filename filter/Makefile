@@ -55,11 +55,11 @@ help: ## Display this help text
 ###@ Build
 
 .PHONY: build
-build: data ## Build the commands
+build: docs data ## Build the commands
 	$(foreach cmd, $(cmds), $(buildcmd) $(cmd);)
 
 .PHONY: image
-image: data ## Build the container images. (use push=true to push)
+image: docs data ## Build the container images. (use push=true to push)
 	$(foreach cmd,$(cmds), TARGET="$(cmd)" envsubst < ../ko.yaml > $(KO_CONFIG_PATH); \
 		$(imgcmd) $(foreach tag,$(tags),--tags $(tag)) $(cmd);)
 

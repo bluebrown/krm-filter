@@ -6,6 +6,7 @@ use (
 	./filter/azure-vault-secrets
 	./filter/kubeaudit
 	./filter/kubeconform
+	./filter/label
 	./filter/patchwork
 	./filter/refhash
 	./util
