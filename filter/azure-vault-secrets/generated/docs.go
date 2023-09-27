@@ -25,7 +25,7 @@ The function requires either service principal credentials or a id token.
     --query accessToken --output tsv)"
 `
 var AzureVaultSecretsExamples = `
-The function config is a simple configmap-like object to controll the behavior
+The function config is a simple configmap-like object to control the behavior
 of the generator.
 
   apiVersion: v1
@@ -45,14 +45,25 @@ The actual secrets are generated from resources of kind ` + "`" + `AzureVaultSou
     annotations:
       config.kubernetes.io/local-config: "true"
   spec:
+    # the name of the secret in kubernetes, to create
     secretName: env-file
+  
+    # list of container targets to inject the secret
+    # as envFrom secret ref
     containerTargets:
       - myapp
+  
+    # the vault uri as written in the azure portal
     vaultUri: https://krmtest.vault.azure.net/
+  
+    # list of secrets to retrieve from the vault
     vaultSecrets:
-      - secret: my-env-file
-        version: ""
-        key: env
+      - secret: my-env-file #the secret name in the vault
+        version: "" # uses 'latest', if empty
+        key: env # the key is the secret name, if empty
+  
+    # optional go template to format the secrets
+    # if not provided, secrets are rendered as key value pairs
     stringDataTemplate: |
       {{ envToYaml .env }}
 

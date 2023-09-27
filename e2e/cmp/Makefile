@@ -15,11 +15,11 @@ help: ## Display this help text
 
 image:
 	@$(MAKE) -C ../../ all
-	@docker build -f $(dir_build)/Dockerfile -t bluebrown/argocd-cmp-krm:v0.1.0 ../../
+	@docker build -f $(dir_build)/Dockerfile -t bluebrown/argocd-cmp-krm:v0.2.0 ../../
 
 kind: image
 	@kind create cluster
-	@kind load docker-image bluebrown/argocd-cmp-krm:v0.1.0
+	@kind load docker-image bluebrown/argocd-cmp-krm:v0.2.0
 	@kubectl rollout restart deploy/argocd-repo-server -n argocd || true
 	@kubectl create ns argocd || true
 

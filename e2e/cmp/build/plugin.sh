@@ -4,7 +4,7 @@ set -euo pipefail
 
 : "${ANNOTATION_DOMAIN:=argocd.my-org.io}"
 
-kpt fn eval --exec azure-vault-secrets
+kpt fn eval --exec azure-vault-secrets -- mode="${SECRET_SOURCE:-azure}"
 
 kpt fn eval --exec refhash
 
